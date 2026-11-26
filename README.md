@@ -132,4 +132,9 @@ O código, os casos de teste, os diagramas e o relatório foram produzidos para 
 
 **Uso de IA:** a equipe usou o **Claude (Anthropic), via Claude Code**, como apoio para propor o problema e as linguagens, escrever o código dos simuladores, gerar os casos de teste e a suíte `unittest`, e redigir o rascunho do relatório e deste README.
 
-**O que a equipe verificou:** *(preencher pela equipe)*. Por exemplo: refazer à mão as provas pelo lema do bombeamento, simular no papel os rastreamentos dos três cenários, conferir cada transição das tabelas com o código e rodar os testes.
+**O que a equipe verificou:**
+
+- executamos os testes obrigatórios e a suíte `unittest` e conferimos que tudo passa;
+- simulamos à mão os três cenários de integração e comparamos com o rastreamento do programa;
+- comparamos as tabelas de transição do relatório com o código (`--spec`) e com os diagramas;
+- refizemos as provas pelo lema do bombeamento e revisamos o texto do relatório.

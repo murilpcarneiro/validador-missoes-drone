@@ -214,14 +214,20 @@ T → p | g</pre>
 <h2>8. Contribuição de cada integrante</h2>
 <table>
 <tr><th>Integrante</th><th>Contribuição</th><th>Parte apresentada</th></tr>
-<tr><td>Murilo Pantoja Carneiro</td><td class="pendente">(descrever a contribuição; ex.: GLC, derivação e prova de não regularidade)</td><td>Problema, GLC, derivação, não regularidade e limitações</td></tr>
-<tr><td>Vithor dos Santos Santa Rosa</td><td class="pendente">(descrever a contribuição; ex.: AP: especificação, justificativa e simulador)</td><td>AP: diagrama, rastreamento, relação GLC ↔ AP e terminação</td></tr>
-<tr><td>João Felipe da Rocha Soares</td><td class="pendente">(descrever a contribuição; ex.: ALL: especificação, prova de não-LLC, simulador e testes)</td><td>Linguagem sensível ao contexto, ALL, fita limitada e testes</td></tr>
+<tr><td>Murilo Pantoja Carneiro</td><td>Definição do problema e de L_AP; gramática G, derivação e prova de não regularidade; análise das limitações</td><td>Problema, GLC, derivação, não regularidade e limitações</td></tr>
+<tr><td>Vithor dos Santos Santa Rosa</td><td>Especificação e simulador do AP; justificativa da equivalência GLC ↔ AP; argumento de terminação</td><td>AP: diagrama, rastreamento, relação GLC ↔ AP e terminação</td></tr>
+<tr><td>João Felipe da Rocha Soares</td><td>Definição de L_ALL e prova de que não é livre de contexto; especificação e simulador do ALL com fita limitada; casos de teste</td><td>Linguagem sensível ao contexto, ALL, fita limitada e testes</td></tr>
 </table>
 
 <h2>9. Originalidade e uso de inteligência artificial</h2>
 <p>O problema (missões de drone com rota espelhada e conferência de comprovantes), as gramáticas, os autômatos, o código, os diagramas (gerados em SVG por <code>docs/gerar_relatorio.py</code>) e os casos de teste foram elaborados para este trabalho. Eles não derivam dos exercícios de sala nem do exemplo da lauda. As técnicas de prova (lemas do bombeamento) e a equivalência ALL ↔ LSC seguem as fontes da seção 2.</p>
-<p><b>Ferramenta de IA:</b> Claude (Anthropic), usado via Claude Code. <b>Tarefas apoiadas:</b> sugestão do problema e das linguagens, implementação dos simuladores e da interface, geração dos casos de teste e da suíte automatizada, e rascunho deste relatório e do README. <b>Verificação feita pela equipe:</b> <span class="pendente">(descrever: por exemplo, refazer as provas, simular à mão os três cenários, conferir as tabelas de transição com o código, executar os testes e revisar o texto)</span>.</p>
+<p><b>Ferramenta de IA:</b> Claude (Anthropic), usado via Claude Code. <b>Tarefas apoiadas:</b> sugestão do problema e das linguagens, implementação dos simuladores e da interface, geração dos casos de teste e da suíte automatizada, e rascunho deste relatório e do README. <b>Verificação feita pela equipe:</b></p>
+<ul>
+  <li>executamos <code>py tests/executar_testes.py</code> e <code>py -m unittest discover -s tests -v</code> e conferimos que todos os testes passam;</li>
+  <li>simulamos à mão, no papel, os três cenários de integração e comparamos passo a passo com o rastreamento exibido pelo programa;</li>
+  <li>comparamos as tabelas de transição deste relatório com o código (<code>py -m validador --spec</code>) e com os diagramas;</li>
+  <li>refizemos as provas pelo lema do bombeamento (seções 3.4 e 4.2) e revisamos o texto do relatório.</li>
+</ul>
 
 </body>
 </html>
