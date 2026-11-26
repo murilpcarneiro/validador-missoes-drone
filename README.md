@@ -36,7 +36,14 @@ Linguagem do ALL: sensível ao contexto, mas não livre de contexto.
 L_ALL = { u = u  :  u ∈ {p,g}+ }
 ```
 
-`inv` troca N↔S e L↔O. A GLC, as especificações dos autômatos, as provas de classificação e a análise dos testes estão no relatório: [docs/relatorio.pdf](docs/relatorio.pdf) (também em [HTML](docs/relatorio.html)).
+`inv` troca N↔S e L↔O.
+
+### Documentos
+
+| Documento | Conteúdo |
+|---|---|
+| [docs/relatorio.pdf](docs/relatorio.pdf) | Relatório técnico: GLC, especificações dos autômatos, provas de classificação e análise dos testes (também em [HTML](docs/relatorio.html)) |
+| [docs/slides.pdf](docs/slides.pdf) | Slides da apresentação (18 slides) |
 
 ### Os três cenários de integração
 
@@ -109,7 +116,7 @@ py docs/gerar_relatorio.py
 | `validador/__main__.py` | interface de linha de comando |
 | `tests/` | casos em JSON, executor dos testes obrigatórios e suíte `unittest` |
 | `exemplos/` | entradas de exemplo, saída da demonstração e especificação impressa |
-| `docs/` | relatório técnico (HTML e PDF) e o script que o gera |
+| `docs/` | relatório técnico (HTML e PDF), o script que o gera e os slides da apresentação |
 
 ## Equipe
 
