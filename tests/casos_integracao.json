@@ -1,0 +1,12 @@
+{
+  "modulo": "Fluxo completo",
+  "casos": [
+    {"entrada": "NNLLN*SOOSS#ppgp=ppgp", "esperado_ap": "aceita", "esperado_all": "aceita", "regra": "estrutura válida e comprovantes na mesma ordem do embarque"},
+    {"entrada": "NNLLN*SOSOS#ppgp=ppgp", "esperado_ap": "rejeita", "esperado_all": "nao_executado", "regra": "a volta não desfaz a ida (regra livre de contexto)"},
+    {"entrada": "NNLLN*SOOSS#ppgp=pgpp", "esperado_ap": "aceita", "esperado_all": "rejeita", "regra": "4 = 4 comprovantes, mas fora da ordem (regra sensível ao contexto)"}
+  ],
+  "simbolo_invalido": [
+    {"modulo": "fluxo", "entrada": "NNLLX*SOOSS#ppgp=ppgp"},
+    {"modulo": "all", "entrada": "ppgpgggpp=ppgpgggpx"}
+  ]
+}

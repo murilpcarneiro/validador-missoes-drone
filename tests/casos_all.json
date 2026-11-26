@@ -1,0 +1,25 @@
+{
+  "modulo": "ALL",
+  "casos": [
+    {"entrada": "ppgpgggpp=ppgpgggpp", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "ggggggggg=ggggggggg", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "ppppppppp=ppppppppp", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "pgpgpgpgp=pgpgpgpgp", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "gpgpgpgpgp=gpgpgpgpgp", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "pppppgggggp=pppppgggggp", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "gppggppggp=gppggppggp", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "pggpgppgpg=pggpgppgpg", "esperado": "aceita", "regra": "comprovantes = volumes, mesma ordem"},
+    {"entrada": "p=p", "esperado": "aceita", "regra": "CASO-LIMITE: menor cadeia aceita (|u| = 1)", "limite": true},
+    {"entrada": "ppgpgggpp=ppgpggpgp", "esperado": "rejeita", "regra": "mesmo tamanho, 7º comprovante difere"},
+    {"entrada": "ppgpgggpp=ppgpgggp", "esperado": "rejeita", "regra": "um comprovante a menos"},
+    {"entrada": "ppgpgggpp=ppgpgggppg", "esperado": "rejeita", "regra": "um comprovante a mais"},
+    {"entrada": "ggggggggg=ppppppppp", "esperado": "rejeita", "regra": "tipos trocados em todas as posições"},
+    {"entrada": "pgpgpgpgp=gpgpgpgpg", "esperado": "rejeita", "regra": "comprovantes deslocados de uma posição"},
+    {"entrada": "pppppggggg=gggggppppp", "esperado": "rejeita", "regra": "comprovantes na ordem inversa (w = w^R não basta)"},
+    {"entrada": "pgpgpgpgppgpgpgpgp", "esperado": "rejeita", "regra": "sem separador '='"},
+    {"entrada": "ppgpg=ggpp=ppgpgggpp", "esperado": "rejeita", "regra": "dois separadores '='"},
+    {"entrada": "=ppgpgggppppgpgggpp", "esperado": "rejeita", "regra": "nenhum volume antes de '='"},
+    {"entrada": "", "esperado": "rejeita", "regra": "CASO-LIMITE: entrada vazia", "limite": true},
+    {"entrada": "=", "esperado": "rejeita", "regra": "CASO-LIMITE: só o separador (u vazio)", "limite": true}
+  ]
+}

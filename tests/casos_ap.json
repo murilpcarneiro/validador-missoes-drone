@@ -1,0 +1,26 @@
+{
+  "modulo": "AP",
+  "casos": [
+    {"entrada": "NNLLN*SOOSS#ppgp=ppgp", "esperado": "aceita", "regra": "volta = ida invertida; 4 volumes e 4 comprovantes"},
+    {"entrada": "NNLLN*SOOSS#ppgp=pgpp", "esperado": "aceita", "regra": "AP só confere quantidade (4 = 4), não a ordem"},
+    {"entrada": "LLNNO*LSSOO#gggp=pggg", "esperado": "aceita", "regra": "volta = ida invertida; 4 = 4"},
+    {"entrada": "SSSOL*OLNNN#pgpg=gpgp", "esperado": "aceita", "regra": "volta = ida invertida; 4 = 4"},
+    {"entrada": "NLSO*LNOS#ppppp=ggggg", "esperado": "aceita", "regra": "AP só confere quantidade (5 = 5)"},
+    {"entrada": "OOOOOO*LLLLLL#pg=gp", "esperado": "aceita", "regra": "6 movimentos O desfeitos por 6 L; 2 = 2"},
+    {"entrada": "NLNLNLNL*OSOSOSOS#g=g", "esperado": "aceita", "regra": "ida longa (8) com volta invertida; 1 = 1"},
+    {"entrada": "SLNOSL*ONLSON#pgg=pgg", "esperado": "aceita", "regra": "volta = ida invertida; 3 = 3"},
+    {"entrada": "N*S#p=p", "esperado": "aceita", "regra": "CASO-LIMITE: menor cadeia aceita (|w| = |u| = |v| = 1)", "limite": true},
+    {"entrada": "NNLLN*SOSOS#ppgp=ppgp", "esperado": "rejeita", "regra": "volta fora de ordem (3º movimento S, topo L)"},
+    {"entrada": "NNLLN*SOOS#ppgp=ppgp", "esperado": "rejeita", "regra": "volta mais curta que a ida"},
+    {"entrada": "NNLLN*SOOSSS#ppgp=ppgp", "esperado": "rejeita", "regra": "volta mais longa que a ida"},
+    {"entrada": "NNLLN*SOOSS#ppgp=ppg", "esperado": "rejeita", "regra": "menos comprovantes que volumes"},
+    {"entrada": "NNLLN*SOOSS#ppgp=ppgpg", "esperado": "rejeita", "regra": "mais comprovantes que volumes"},
+    {"entrada": "NNLLNSOOSS#ppgp=ppgp", "esperado": "rejeita", "regra": "falta o ponto de entrega '*'"},
+    {"entrada": "NNLLN*SOOSS#=ppgpppgp", "esperado": "rejeita", "regra": "nenhum volume embarcado antes de '='"},
+    {"entrada": "NNLLN*SOOSSppgp=ppgp", "esperado": "rejeita", "regra": "falta o separador '#'"},
+    {"entrada": "*NNLLNSOOSS#ppgp=ppgp", "esperado": "rejeita", "regra": "rota de ida vazia"},
+    {"entrada": "NNLLN*SOOSS#pp=gp=ppgp", "esperado": "rejeita", "regra": "dois separadores '='"},
+    {"entrada": "NNLLN*SOOSS#ppgp=ppgp#", "esperado": "rejeita", "regra": "símbolo excedente após o manifesto"},
+    {"entrada": "", "esperado": "rejeita", "regra": "CASO-LIMITE: entrada vazia", "limite": true}
+  ]
+}

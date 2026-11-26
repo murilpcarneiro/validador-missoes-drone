@@ -1,0 +1,77 @@
+=== GLC G = (V, Σ, P, M) ===
+V = {M, R, C, T}; Σ = {#, *, =, L, N, O, S, g, p}; símbolo inicial: M
+  M → R # C
+  R → N R S | S R N | L R O | O R L | N * S | S * N | L * O | O * L
+  C → T C T | T = T
+  T → p | g
+
+=== AP (aceitação por estado final, entrada consumida por inteiro) ===
+Q = ['q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7'] | q0 inicial | F = ['q7']
+Σ = {#, *, =, L, N, O, S, g, p} | Γ = {$, K, L, N, O, S} | fundo da pilha: $
+   δ(q0, ε, $) = (q1, $)
+   δ(q1, N, $) = (q2, N$)
+   δ(q1, S, $) = (q2, S$)
+   δ(q1, L, $) = (q2, L$)
+   δ(q1, O, $) = (q2, O$)
+   δ(q2, N, N) = (q2, NN)
+   δ(q2, N, S) = (q2, NS)
+   δ(q2, N, L) = (q2, NL)
+   δ(q2, N, O) = (q2, NO)
+   δ(q2, S, N) = (q2, SN)
+   δ(q2, S, S) = (q2, SS)
+   δ(q2, S, L) = (q2, SL)
+   δ(q2, S, O) = (q2, SO)
+   δ(q2, L, N) = (q2, LN)
+   δ(q2, L, S) = (q2, LS)
+   δ(q2, L, L) = (q2, LL)
+   δ(q2, L, O) = (q2, LO)
+   δ(q2, O, N) = (q2, ON)
+   δ(q2, O, S) = (q2, OS)
+   δ(q2, O, L) = (q2, OL)
+   δ(q2, O, O) = (q2, OO)
+   δ(q2, *, N) = (q3, N)
+   δ(q2, *, S) = (q3, S)
+   δ(q2, *, L) = (q3, L)
+   δ(q2, *, O) = (q3, O)
+   δ(q3, S, N) = (q3, ε)
+   δ(q3, N, S) = (q3, ε)
+   δ(q3, O, L) = (q3, ε)
+   δ(q3, L, O) = (q3, ε)
+   δ(q3, #, $) = (q4, $)
+   δ(q4, p, $) = (q5, K$)
+   δ(q4, g, $) = (q5, K$)
+   δ(q5, p, K) = (q5, KK)
+   δ(q5, g, K) = (q5, KK)
+   δ(q5, =, K) = (q6, K)
+   δ(q6, p, K) = (q6, ε)
+   δ(q6, g, K) = (q6, ε)
+   δ(q6, ε, $) = (q7, $)
+Total: 38 transições
+
+=== ALL (transição ausente → qR) ===
+Q = ['q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'qA', 'qR'] | inicial q0 | aceitação qA | rejeição qR
+Σ = {=, g, p} | Γ = {<, =, >, X, Y, g, p} | marcadores: < e >
+   δ(q0, <) = (q1, <, D)
+   δ(q1, p) = (q2, X, D)
+   δ(q1, g) = (q3, X, D)
+   δ(q2, p) = (q2, p, D)
+   δ(q2, g) = (q2, g, D)
+   δ(q2, =) = (q4, =, D)
+   δ(q3, p) = (q3, p, D)
+   δ(q3, g) = (q3, g, D)
+   δ(q3, =) = (q5, =, D)
+   δ(q4, Y) = (q4, Y, D)
+   δ(q4, p) = (q6, Y, E)
+   δ(q5, Y) = (q5, Y, D)
+   δ(q5, g) = (q6, Y, E)
+   δ(q6, p) = (q6, p, E)
+   δ(q6, g) = (q6, g, E)
+   δ(q6, =) = (q6, =, E)
+   δ(q6, Y) = (q6, Y, E)
+   δ(q6, X) = (q7, X, D)
+   δ(q7, p) = (q2, X, D)
+   δ(q7, g) = (q3, X, D)
+   δ(q7, =) = (q8, =, D)
+   δ(q8, Y) = (q8, Y, D)
+   δ(q8, >) = (qA, >, P)
+Total: 23 transições

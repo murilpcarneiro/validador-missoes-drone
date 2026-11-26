@@ -1,0 +1,9 @@
+# Uma cadeia por linha (linhas com # no início são comentários)
+# Fluxo completo: aceita pelos dois módulos
+NNLLN*SOOSS#ppgp=ppgp
+# Rejeitada pelo AP (a volta não desfaz a ida)
+NNLLN*SOSOS#ppgp=ppgp
+# Aceita pelo AP, rejeitada pelo ALL (comprovantes fora de ordem)
+NNLLN*SOOSS#ppgp=pgpp
+# Símbolo fora do alfabeto
+NNLLX*SOOSS#ppgp=ppgp

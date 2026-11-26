@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Relatório técnico — Validador de missões de drone (AP + ALL)</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-family: "Segoe UI", Arial, sans-serif; font-size: 10.5pt; line-height: 1.45; color: #1d1d1f; max-width: 900px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20pt; margin: 0 0 4px; }
+  h2 { font-size: 14pt; border-bottom: 2px solid #1f4e79; padding-bottom: 3px; margin-top: 26px; color: #1f4e79; break-after: avoid; }
+  h3 { font-size: 11.5pt; margin-top: 18px; break-after: avoid; }
+  .sub { color: #555; margin-bottom: 18px; }
+  code, .mono { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.6pt; background: #f5f6f8; border: 1px solid #dde; padding: 8px 10px; overflow-x: auto; line-height: 1.3; white-space: pre; break-inside: avoid; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 12px; font-size: 9pt; }
+  th, td { border: 1px solid #c9ccd3; padding: 3px 6px; text-align: left; vertical-align: top; }
+  th { background: #e8eef6; }
+  tr { break-inside: avoid; }
+  .box { border-left: 4px solid #1f4e79; background: #f3f7fb; padding: 8px 12px; margin: 10px 0; }
+  .ok { color: #137333; font-weight: 600; }
+  .bad { color: #b3261e; font-weight: 600; }
+  figure { margin: 10px 0 16px; text-align: center; break-inside: avoid; }
+  figcaption { font-size: 9pt; color: #555; margin-top: 4px; }
+  svg text { font-family: Consolas, "Courier New", monospace; }
+  .pendente { background: #fff4cc; padding: 0 3px; }
+  td.c { text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>Validador de missões de drone de entrega</h1>
+<div class="sub">Trabalho prático de Linguagens Formais e Autômatos: reconhecimento de linguagens com pilha e fita limitada<br>
+Equipe: Murilo Pantoja Carneiro, Vithor dos Santos Santa Rosa e João Felipe da Rocha Soares · Turma: <span class="pendente">(CC6MA / CC6NA)</span> · Repositório: <span class="pendente">(link do GitHub)</span></div>
+
+<h2>1. Problema</h2>
+<p>Uma empresa de entregas por drone opera em <b>corredores aéreos autorizados</b>. Cada missão gera um registro textual com duas partes:</p>
+<ol>
+  <li><b>Rota.</b> Os movimentos de ida (N, S, L, O), o ponto de entrega <code>*</code> e os movimentos de volta. Por regra de segurança, o drone deve voltar <b>pelo mesmo corredor</b>, desfazendo a ida: os movimentos aparecem na ordem inversa e com direções opostas. Ida <code>NNLLN</code> exige volta <code>SOOSS</code>.</li>
+  <li><b>Manifesto de carga</b>, depois de <code>#</code>. Ele traz a sequência de volumes embarcados (<code>p</code> = pequeno, <code>g</code> = grande), o separador <code>=</code> e a sequência de comprovantes de entrega. Cada comprovante corresponde a um volume, <b>na mesma ordem</b> de embarque.</li>
+</ol>
+<p>A validação ocorre em duas etapas:</p>
+<ul>
+  <li><b>Etapa 1, autômato de pilha (AP):</b> verifica a estrutura livre de contexto. A volta deve espelhar a ida, e o manifesto deve ter a mesma <i>quantidade</i> de comprovantes e de volumes. A pilha guarda os movimentos de ida e, depois, um marcador por volume.</li>
+  <li><b>Etapa 2, autômato linearmente limitado (ALL):</b> recebe o trecho após <code>#</code> e verifica a regra sensível ao contexto: a sequência de comprovantes é <b>idêntica</b> à de volumes (<code>u = u</code>). Uma pilha não consegue fazer essa verificação.</li>
+</ul>
+<table>
+<tr><th>Entrada</th><th>AP</th><th>ALL</th><th>Motivo</th></tr>
+<tr><td><code>NNLLN*SOOSS#ppgp=ppgp</code></td><td class="ok">aceita</td><td class="ok">aceita</td><td>volta espelha a ida; comprovantes iguais ao embarque</td></tr>
+<tr><td><code>NNLLN*SOSOS#ppgp=ppgp</code></td><td class="bad">rejeita</td><td>não executa</td><td>a volta não desfaz a ida</td></tr>
+<tr><td><code>NNLLN*SOOSS#ppgp=pgpp</code></td><td class="ok">aceita</td><td class="bad">rejeita</td><td>4 comprovantes para 4 volumes, mas em outra ordem</td></tr>
+</table>
+<p>A divisão é proposital. O AP confere tudo o que uma pilha consegue: o espelhamento da rota e a <i>contagem</i> dos comprovantes. Sobra para o ALL apenas o que exige uma memória de acesso não-LIFO: a <i>identidade, em ordem</i>, entre duas sequências.</p>
+
+<h2>2. Fontes consultadas</h2>
+<ul>
+  <li>SIPSER, M. <i>Introdução à Teoria da Computação</i>. 2. ed. São Paulo: Cengage Learning, 2007. Cap. 1.4 (lema do bombeamento para linguagens regulares), cap. 2 (GLC, autômatos com pilha, equivalência GLC ↔ AP, lema do bombeamento para LLC; a linguagem {ww} não é livre de contexto) e cap. 4–5 (máquinas de Turing, autômatos linearmente limitados e decidibilidade de A<sub>ALL</sub>).</li>
+  <li>HOPCROFT, J. E.; MOTWANI, R.; ULLMAN, J. D. <i>Introdução à Teoria de Autômatos, Linguagens e Computação</i>. Rio de Janeiro: Campus/Elsevier, 2002. Cap. 6 (autômatos de pilha determinísticos e aceitação por estado final e por pilha vazia) e cap. 7 (propriedades das LLC e lema do bombeamento).</li>
+  <li>MENEZES, P. B. <i>Linguagens Formais e Autômatos</i>. 6. ed. Porto Alegre: Bookman, 2011. Hierarquia de Chomsky, linguagens sensíveis ao contexto e autômatos com fita limitada.</li>
+  <li>KURODA, S.-Y. Classes of languages and linear-bounded automata. <i>Information and Control</i>, v. 7, n. 2, p. 207–223, 1964. Equivalência entre linguagens sensíveis ao contexto e as aceitas por ALL.</li>
+</ul>
+
+<h2>3. Etapa 1: linguagem livre de contexto, GLC e autômato de pilha</h2>
+
+<h3>3.1 Alfabeto e regra de formação</h3>
+<p>Σ<sub>AP</sub> = { N, S, L, O, *, #, p, g, = }. Seja <code>inv</code> o homomorfismo que troca N↔S e L↔O. Então:</p>
+<div class="box mono">L_AP = { w * inv(w)<sup>R</sup> # u = v &nbsp;:&nbsp; w ∈ {N,S,L,O}<sup>+</sup>, &nbsp;u, v ∈ {p,g}<sup>+</sup>, &nbsp;|u| = |v| }</div>
+<p>Em palavras: a ida <code>w</code> não é vazia; a volta é a ida lida de trás para frente com cada direção invertida; há pelo menos um volume; e o número de comprovantes é igual ao de volumes.</p>
+
+<h3>3.2 Gramática livre de contexto</h3>
+<p>G = (V, Σ<sub>AP</sub>, P, M), com não terminais V = { M, R, C, T }, terminais Σ<sub>AP</sub> e símbolo inicial <b>M</b> (missão). R gera a rota, C a carga e T um volume. As produções P são:</p>
+<pre>M → R # C
+R → N R S | S R N | L R O | O R L          (par externo: movimento e seu inverso)
+  | N * S | S * N | L * O | O * L          (par mais interno, em volta do ponto de entrega)
+C → T C T | T = T                          (um volume à esquerda para cada comprovante à direita)
+T → p | g</pre>
+<p><b>Por que G gera L_AP.</b> Por indução em |w|, R ⇒* x R inv(x) gera exatamente as cadeias <code>w * inv(w)<sup>R</sup></code> com |w| ≥ 1. A base é R → x * inv(x). No passo, R → x R inv(x) acrescenta x à esquerda de w e inv(x) à direita da volta, que é justamente o fim de inv(xw)<sup>R</sup>. Do mesmo modo, C gera <code>u = v</code> com |u| = |v| ≥ 1: cada aplicação de C → T C T acrescenta um símbolo de cada lado, e T = T fecha com um de cada lado. G não é ambígua: em cada passo, a produção usada é determinada pelo próximo par de símbolos.</p>
+
+<h3>3.3 Derivação de uma cadeia aceita</h3>
+<p>Derivação mais à esquerda de <code>NNLLN*SOOSS#ppgp=ppgp</code> (21 símbolos), gerada por <code>py -m validador -d "NNLLN*SOOSS#ppgp=ppgp"</code>:</p>
+<pre>{{DERIVACAO}}</pre>
+
+<h3>3.4 L_AP não é regular</h3>
+<p>Suponha que L_AP seja regular, com comprimento de bombeamento k. Tome s = N<sup>k</sup> * S<sup>k</sup> # p = p ∈ L_AP, com |s| ≥ k. Qualquer divisão s = xyz com |xy| ≤ k e |y| ≥ 1 tem y = N<sup>j</sup>, j ≥ 1. Então xy<sup>2</sup>z = N<sup>k+j</sup> * S<sup>k</sup> # p = p, em que a volta é menor que a ida. Essa cadeia não pertence a L_AP, o que contradiz o lema do bombeamento (Sipser, seção 1.4). Logo, L_AP não é regular. Intuitivamente, um AFD teria de memorizar o comprimento da ida, que não tem limite.</p>
+<p>L_AP é livre de contexto porque é gerada pela GLC G da seção 3.2 e reconhecida pelo AP da seção 3.5.</p>
+
+<h3>3.5 Especificação do autômato de pilha</h3>
+<p>P = (Q, Σ, Γ, δ, q0, $, F), <b>determinístico</b>, com <b>aceitação por estado final</b>. A entrada só é aceita se for consumida por inteiro e o autômato parar em um estado de F.</p>
+<ul>
+  <li>Q = { q0, q1, q2, q3, q4, q5, q6, q7 } (8 estados); estado inicial q0; F = { q7 }.</li>
+  <li>Σ = { N, S, L, O, *, #, p, g, = }.</li>
+  <li>Γ = { $, N, S, L, O, K }. <code>$</code> é o marcador de fundo; N, S, L, O guardam os movimentos de ida; K marca um volume embarcado.</li>
+  <li>Configuração inicial: (q0, entrada completa, pilha = <code>$</code>).</li>
+</ul>
+<figure>{{DIAGRAMA_AP}}<figcaption>Figura 1. Diagrama do AP. Rótulos “símbolo lido, topo / string empilhada” (o primeiro caractere vira o topo). x, y ∈ {N,S,L,O}; x̄ = inv(x); v ∈ {p,g}. Transições ausentes levam à rejeição.</figcaption></figure>
+<table>
+<tr><th>Estado</th><th>Papel</th><th>Transições (δ(estado, lido, topo) = (destino, empilha))</th></tr>
+<tr><td>q0</td><td>início</td><td>δ(q0, ε, $) = (q1, $)</td></tr>
+<tr><td>q1</td><td>1º movimento da ida (garante w ≠ ε)</td><td>δ(q1, x, $) = (q2, x$), para x ∈ {N,S,L,O}</td></tr>
+<tr><td>q2</td><td>ida: empilha cada movimento</td><td>δ(q2, x, y) = (q2, xy) para x, y ∈ {N,S,L,O} (16 transições); δ(q2, *, y) = (q3, y)</td></tr>
+<tr><td>q3</td><td>volta: desempilha o inverso</td><td>δ(q3, S, N) = δ(q3, N, S) = δ(q3, O, L) = δ(q3, L, O) = (q3, ε); δ(q3, #, $) = (q4, $)</td></tr>
+<tr><td>q4</td><td>1º volume (garante u ≠ ε)</td><td>δ(q4, v, $) = (q5, K$), v ∈ {p,g}</td></tr>
+<tr><td>q5</td><td>volumes: empilha K por volume</td><td>δ(q5, v, K) = (q5, KK); δ(q5, =, K) = (q6, K)</td></tr>
+<tr><td>q6</td><td>comprovantes: desempilha K</td><td>δ(q6, v, K) = (q6, ε); δ(q6, ε, $) = (q7, $)</td></tr>
+<tr><td>q7</td><td>aceitação</td><td>nenhuma; qualquer símbolo restante causa rejeição</td></tr>
+</table>
+<p>São 38 transições ao todo (lista completa em <code>py -m validador --spec</code> e em <code>exemplos/especificacao.txt</code>).</p>
+<p><b>Determinismo.</b> Para cada par (estado, topo) há no máximo uma transição por símbolo. As únicas transições ε (em q0 e em q6) ocorrem com topo <code>$</code>, e nenhuma transição que lê símbolo no mesmo estado usa esse topo. O construtor da classe <code>AutomatoPilha</code> verifica essa condição e recusa autômatos não determinísticos. Por isso o simulador nunca precisa explorar alternativas.</p>
+
+<h3>3.6 Por que o AP reconhece L(G)</h3>
+<p>Os invariantes abaixo valem em cada estado:</p>
+<ul>
+  <li><b>q2:</b> depois de ler a ida w = w<sub>1</sub>…w<sub>i</sub>, a pilha é w<sub>i</sub>…w<sub>1</sub>$ (topo à esquerda). Esse é o mesmo papel do não terminal R, que “abre” um par x … inv(x).</li>
+  <li><b>q3:</b> cada símbolo da volta só é consumido se for o inverso do topo, e o topo é o último movimento de ida ainda não desfeito. A transição para q4 com <code>#</code> exige topo <code>$</code>. Assim, a volta lida é exatamente inv(w)<sup>R</sup>: nem mais curta (topo ≠ $ ao ler #), nem mais longa (topo $ ao ler direção), nem fora de ordem. Isso corresponde a fechar os pares x … inv(x) de R → x R inv(x), do mais interno para o mais externo.</li>
+  <li><b>q5/q6:</b> há tantos K na pilha quantos volumes lidos menos comprovantes lidos. A ida a q7 exige topo <code>$</code>, ou seja, contagens iguais. Isso corresponde a C → T C T, que gera um T de cada lado.</li>
+  <li><b>q7:</b> não tem transições. Se ainda houver entrada, o AP rejeita, o que garante o consumo integral.</li>
+</ul>
+<p>Portanto, o AP aceita uma cadeia se e somente se ela tem a forma w * inv(w)<sup>R</sup> # u = v com |w|, |u| ≥ 1 e |u| = |v|, isto é, L(P) = L_AP = L(G). A construção padrão GLC → AP (Sipser, Lema 2.21) daria um AP não determinístico com 3 estados principais. O AP acima é uma versão determinística equivalente, feita à mão para que a pilha tenha significado no domínio. Além do argumento, a suíte de testes compara o AP, a GLC (por meio do construtor de árvores sintáticas) e a definição matemática em <b>todas</b> as cadeias de até 7 símbolos sobre {N,S,L,*,#,p,=,g} (mais de 2 milhões de cadeias) e em 3000 cadeias aleatórias estruturadas. Não houve nenhuma divergência.</p>
+
+<h3>3.7 Rastreamento do AP</h3>
+<p>Entrada <code>NNLLN*SOOSS#ppgp=ppgp</code>. Colunas: estado, posição de leitura (índice do próximo símbolo), entrada restante e pilha (topo à esquerda).</p>
+<pre>{{TRACE_AP}}</pre>
+
+<h2>4. Etapa 2: linguagem sensível ao contexto e ALL</h2>
+
+<h3>4.1 Linguagem, alfabeto e regra de aceitação</h3>
+<p>Σ<sub>ALL</sub> = { p, g, = }.</p>
+<div class="box mono">L_ALL = { u = u &nbsp;:&nbsp; u ∈ {p,g}<sup>+</sup> }</div>
+<p>Regra: a cadeia tem exatamente um <code>=</code>, a parte esquerda (volumes) não é vazia e a parte direita (comprovantes) é <b>idêntica</b> a ela, símbolo a símbolo e na mesma ordem. O fluxo completo aceita somente as missões cuja carga pertence a L_ALL, e essa linguagem combinada também não é livre de contexto.</p>
+
+<h3>4.2 L_ALL não é livre de contexto</h3>
+<p>Suponha que L_ALL seja livre de contexto, com comprimento de bombeamento m. Tome s = p<sup>m</sup>g<sup>m</sup> = p<sup>m</sup>g<sup>m</sup> ∈ L_ALL. Seja s = abcde com |bcd| ≤ m e |bd| ≥ 1 (Sipser, Teorema 2.34). Há três casos:</p>
+<ol>
+  <li><b>b ou d contém o <code>=</code>.</b> Então ab<sup>0</sup>cd<sup>0</sup>e não tem <code>=</code> e não pertence a L_ALL.</li>
+  <li><b>bcd está inteiramente de um lado do <code>=</code>.</b> Então ab<sup>2</sup>cd<sup>2</sup>e aumenta só aquele lado, os dois lados ficam com comprimentos diferentes e a cadeia não pertence a L_ALL.</li>
+  <li><b>O <code>=</code> está em c.</b> Como |bcd| ≤ m, b está dentro do bloco g<sup>m</sup> da esquerda e d dentro do bloco p<sup>m</sup> da direita. Bombeando com i = 0, o lado esquerdo fica p<sup>m</sup>g<sup>m−|b|</sup> e o direito p<sup>m−|d|</sup>g<sup>m</sup>. Se |d| > 0, os lados têm quantidades diferentes de p. Se |d| = 0, então |b| > 0 e têm quantidades diferentes de g. Em ambos os casos, a cadeia não pertence a L_ALL.</li>
+</ol>
+<p>Todos os casos contradizem o lema, logo L_ALL não é livre de contexto. É o mesmo argumento usado para a linguagem {ww} em Sipser (seção 2.3). Intuitivamente, a pilha devolve os símbolos em ordem inversa (LIFO), o que serve para conferir espelhamento (w e w<sup>R</sup>, como na rota), mas não cópia na mesma ordem.</p>
+<p><b>L_ALL é sensível ao contexto</b> porque é aceita pelo ALL determinístico da seção 4.3, e, pelo teorema de Kuroda (1964), as linguagens aceitas por ALL são exatamente as sensíveis ao contexto. A hierarquia fica assim: L_AP é LLC e não regular; L_ALL é LSC e não LLC.</p>
+
+<h3>4.3 Especificação do ALL</h3>
+<p>M = (Q, Σ, Γ, δ, q0, &lt;, &gt;, qA, qR), <b>determinístico</b>.</p>
+<ul>
+  <li>Q = { q0, q1, q2, q3, q4, q5, q6, q7, q8, qA, qR } (11 estados); estado inicial q0; aceitação qA; rejeição qR.</li>
+  <li>Σ = { p, g, = }; Γ = { p, g, =, X, Y, &lt;, &gt; }. X marca um volume já conferido e Y um comprovante já conferido; &lt; e &gt; são os marcadores de borda.</li>
+  <li><b>Fita:</b> para uma entrada de n símbolos, a fita tem exatamente <b>n + 2 células</b>: &lt; x<sub>1</sub> … x<sub>n</sub> &gt;. Só as n células internas são graváveis. Toda a memória de trabalho (as marcas X e Y) é escrita sobre a própria entrada, sem nenhuma célula extra.</li>
+  <li><b>Configuração inicial:</b> estado q0, cabeçote sobre &lt; (célula 0).</li>
+  <li><b>Limites:</b> toda transição que lê &lt; move para a direita, e toda transição que lê &gt; permanece ou move para a esquerda. Nenhuma transição escreve sobre um marcador. O simulador valida isso ao construir o autômato (<code>LimiteFitaError</code>) e confere de novo a cada passo.</li>
+  <li><b>Aceitação:</b> alcançar qA. <b>Rejeição:</b> alcançar qR. Toda combinação (estado, símbolo) sem transição listada vai implicitamente para qR.</li>
+</ul>
+<figure>{{DIAGRAMA_ALL}}<figcaption>Figura 2. Diagrama do ALL. Rótulos “lido / escrito, movimento” (D = direita, E = esquerda, P = permanece). Transições ausentes levam a qR.</figcaption></figure>
+<table>
+<tr><th>Estado</th><th>Papel</th><th>Transições δ(estado, lido) = (destino, escrito, movimento)</th></tr>
+<tr><td>q0</td><td>início</td><td>(q0, &lt;) → (q1, &lt;, D)</td></tr>
+<tr><td>q1</td><td>1º volume (u ≠ ε)</td><td>(q1, p) → (q2, X, D); (q1, g) → (q3, X, D)</td></tr>
+<tr><td>q2</td><td>“levando p” até o =</td><td>(q2, p|g) → (q2, mesmo, D); (q2, =) → (q4, =, D)</td></tr>
+<tr><td>q3</td><td>“levando g” até o =</td><td>(q3, p|g) → (q3, mesmo, D); (q3, =) → (q5, =, D)</td></tr>
+<tr><td>q4</td><td>procura 1º comprovante não conferido, que deve ser p</td><td>(q4, Y) → (q4, Y, D); (q4, p) → (q6, Y, E)</td></tr>
+<tr><td>q5</td><td>procura 1º comprovante não conferido, que deve ser g</td><td>(q5, Y) → (q5, Y, D); (q5, g) → (q6, Y, E)</td></tr>
+<tr><td>q6</td><td>volta até o último X</td><td>(q6, p|g|=|Y) → (q6, mesmo, E); (q6, X) → (q7, X, D)</td></tr>
+<tr><td>q7</td><td>próximo volume ou fim dos volumes</td><td>(q7, p) → (q2, X, D); (q7, g) → (q3, X, D); (q7, =) → (q8, =, D)</td></tr>
+<tr><td>q8</td><td>todos os comprovantes conferidos?</td><td>(q8, Y) → (q8, Y, D); (q8, &gt;) → (qA, &gt;, P)</td></tr>
+<tr><td>qA / qR</td><td>parada</td><td>nenhuma</td></tr>
+</table>
+
+<h3>4.4 Justificativa da regra e correção do ALL</h3>
+<p><b>Invariante.</b> Ao entrar em q7 pela k-ésima vez, os k primeiros volumes estão marcados com X, os k primeiros comprovantes estão marcados com Y e u<sub>i</sub> = v<sub>i</sub> para todo i ≤ k. Cada rodada faz o seguinte:</p>
+<ol>
+  <li>Marca o próximo volume com X e guarda o seu tipo no estado (q2 = p, q3 = g). Essa é a única “memória” além da fita, e é finita.</li>
+  <li>Avança até o <code>=</code>, pula os Y e confere o primeiro comprovante não marcado: se for do mesmo tipo, marca com Y; se não for, rejeita.</li>
+  <li>Volta até o último X.</li>
+</ol>
+<p>Quando q7 lê <code>=</code>, todos os volumes foram conferidos, e q8 exige que só haja Y até &gt;. Com isso, o ALL aceita se e somente se |u| = |v| e u<sub>i</sub> = v<sub>i</sub> para todo i, ou seja, v = u. Os outros formatos também são rejeitados: sem <code>=</code> (q2/q3 chegam a &gt;), com dois <code>=</code> (q4/q5/q8 leem =), com u vazio (q1 lê =) e a entrada vazia (q1 lê &gt;). A suíte compara o ALL com a definição de L_ALL em <b>todas</b> as cadeias de até 10 símbolos sobre {p,g,=} (88.573 cadeias), sem nenhuma divergência.</p>
+<p><b>Limite da fita.</b> O algoritmo só reescreve p→X e p/g→Y nas células da própria entrada. Por isso n células graváveis bastam, e os marcadores impedem que o cabeçote saia da fita. O teste <code>test_fita_limitada</code> verifica, em todos os passos, que a fita tem n + 2 células, que os marcadores estão intactos e que o cabeçote está em [0, n+1].</p>
+
+<h3>4.5 Rastreamento do ALL</h3>
+<p>Cenário 3 de integração: o trecho <code>ppgp=pgpp</code> (n = 9, fita de 11 células). O <code>[ ]</code> marca a célula sob o cabeçote.</p>
+<pre>{{TRACE_ALL}}</pre>
+<p>A rejeição acontece no passo em que q4, que procura um comprovante <code>p</code> para o 2º volume, encontra <code>g</code>. Não existe δ(q4, g), então o ALL vai para qR. O AP havia aceitado essa mesma missão porque só contou 4 K empilhados e 4 desempilhados. Esse é o limite exato da pilha.</p>
+<p>Entrada aceita curta, <code>pg=pg</code>:</p>
+<pre>{{TRACE_ALL_CURTO}}</pre>
+
+<h2>5. Implementação</h2>
+<ul>
+  <li><b>Linguagem:</b> Python 3.10+, só com a biblioteca padrão. <b>Interface:</b> linha de comando com modo direto, modo interativo, arquivo de entradas, demonstração (<code>--demo</code>), especificação (<code>--spec</code>) e derivação (<code>-d</code>).</li>
+  <li><b>Arquitetura:</b> <code>ap.py</code> e <code>lba.py</code> têm simuladores <i>genéricos</i>, que recebem estados, alfabetos e a tabela δ, e os autômatos do projeto definidos como dados. A decisão sai <b>exclusivamente</b> da execução das transições. Não há expressões regulares nem comparações de strings decidindo pertinência. A única verificação prévia é a do alfabeto de entrada, que produz uma mensagem de erro em vez de uma rejeição.</li>
+  <li><b>Fluxo:</b> <code>pipeline.py</code> verifica Σ<sub>AP</sub>, executa o AP e, só se ele aceitar, passa ao ALL o trecho após o <code>#</code>.</li>
+  <li><b>Rastreamento:</b> cada passo guarda a configuração completa (estado, posição, pilha ou fita) e a transição usada.</li>
+</ul>
+<h3>5.1 Terminação</h3>
+<ul>
+  <li><b>AP:</b> é determinístico, cada transição não-ε consome um símbolo e as duas únicas transições ε (q0→q1 e q6→q7) não formam ciclo: q0 não é alcançável de volta, e q7 não tem saídas. Para uma entrada de n símbolos, a execução tem no máximo n + 2 passos. O simulador ainda impõe um limite de segurança de 2n + 2|Q| + 2 passos.</li>
+  <li><b>ALL:</b> a cada rodada, o número de símbolos não marcados diminui em 2 (um X e um Y), ou a máquina para. Dentro de uma rodada, o cabeçote anda para a direita até a célula conferida e depois para a esquerda até o último X, com no máximo 2(n+2) movimentos. Há no máximo n/2 rodadas, mais a varredura final de q8, o que dá O(n²) passos. O teste <code>test_passos_quadraticos</code> confere a cota (n+2)² + n + 2. Além disso, como ALL determinístico, ele tem no máximo |Q|·(n+2)·|Γ|<sup>n</sup> configurações distintas. O simulador genérico detecta repetição de configuração e rejeita, o que garante parada até para tabelas δ arbitrárias.</li>
+  <li><b>Não determinismo:</b> nenhum dos dois autômatos é não determinístico. Os construtores verificam isso e recusam tabelas com conflito. Portanto, não é preciso explorar alternativas: em cada configuração há no máximo uma transição aplicável, e a ausência de transição decide a rejeição.</li>
+</ul>
+
+<h2>6. Testes</h2>
+<p>Todos os testes são reproduzidos com <code>py tests/executar_testes.py</code>, que gera <code>tests/RESULTADOS.md</code>, e com <code>py -m unittest discover -s tests -v</code>. As cadeias de teste têm pelo menos 18 símbolos. As exceções são os casos-limite, marcados como tais. Todas as cadeias são distintas e usam só o alfabeto do módulo.</p>
+{{TESTES}}
+
+<h2>7. Análise dos resultados</h2>
+<ul>
+  <li>Todos os testes passaram: {{N_AP}} casos do AP, {{N_ALL}} casos do ALL, 3 de integração e 2 de símbolo inválido. As verificações exaustivas não encontraram nenhuma divergência entre o AP, a GLC e a definição de L_AP, nem entre o ALL e a definição de L_ALL.</li>
+  <li>Os casos AP 2 e AP 5 (<code>…#ppgp=pgpp</code>, <code>…#ppppp=ggggg</code>) mostram o que a pilha consegue e o que não consegue. O AP aceita porque as quantidades batem, e só o ALL percebe que os comprovantes não correspondem aos volumes. Já o caso ALL 15 (<code>pppppggggg=gggggppppp</code>, comprovantes na ordem inversa) é o tipo de relação que uma pilha <i>conseguiria</i> verificar (espelhamento, como na rota), mas a regra exige cópia na mesma ordem.</li>
+  <li>As mensagens de rejeição apontam o estado, o símbolo e o topo ou a célula em que faltou transição. Isso permite prever e explicar a decisão a partir das operações do autômato.</li>
+</ul>
+<h3>7.1 Limitações observadas</h3>
+<ul>
+  <li><b>Custo quadrático do ALL:</b> a entrada de 9 símbolos do cenário 1 já exige {{PASSOS_C1}} passos. Com 200 volumes seriam {{PASSOS_200}} passos, contra os n + 2 do AP. O vaivém do cabeçote é o preço de trabalhar só dentro das n células.</li>
+  <li><b>Rastreamentos longos:</b> pelo mesmo motivo, o rastreamento do ALL fica extenso para entradas grandes e é mais útil na demonstração com cadeias curtas.</li>
+  <li><b>Modelo de rota simplificado:</b> o AP exige a volta exatamente espelhada. Uma volta por outro caminho que também retorne à base (por exemplo, ida <code>NL</code> e volta <code>SO</code>) é rejeitada. Aceitar “qualquer volta que retorne à base” exigiria contar deslocamentos em dois eixos, uma dependência que também já não é livre de contexto.</li>
+  <li><b>Erro antes do autômato:</b> um símbolo fora do alfabeto é detectado pela aplicação antes da simulação e gera uma mensagem de erro, não uma rejeição. Formalmente, o AP rejeitaria por falta de transição; a mensagem separa “entrada mal formada” de “entrada fora da linguagem”.</li>
+</ul>
+
+<h2>8. Contribuição de cada integrante</h2>
+<table>
+<tr><th>Integrante</th><th>Contribuição</th><th>Parte apresentada</th></tr>
+<tr><td>Murilo Pantoja Carneiro</td><td class="pendente">(descrever a contribuição; ex.: GLC, derivação e prova de não regularidade)</td><td>Problema, GLC, derivação, não regularidade e limitações</td></tr>
+<tr><td>Vithor dos Santos Santa Rosa</td><td class="pendente">(descrever a contribuição; ex.: AP: especificação, justificativa e simulador)</td><td>AP: diagrama, rastreamento, relação GLC ↔ AP e terminação</td></tr>
+<tr><td>João Felipe da Rocha Soares</td><td class="pendente">(descrever a contribuição; ex.: ALL: especificação, prova de não-LLC, simulador e testes)</td><td>Linguagem sensível ao contexto, ALL, fita limitada e testes</td></tr>
+</table>
+
+<h2>9. Originalidade e uso de inteligência artificial</h2>
+<p>O problema (missões de drone com rota espelhada e conferência de comprovantes), as gramáticas, os autômatos, o código, os diagramas (gerados em SVG por <code>docs/gerar_relatorio.py</code>) e os casos de teste foram elaborados para este trabalho. Eles não derivam dos exercícios de sala nem do exemplo da lauda. As técnicas de prova (lemas do bombeamento) e a equivalência ALL ↔ LSC seguem as fontes da seção 2.</p>
+<p><b>Ferramenta de IA:</b> Claude (Anthropic), usado via Claude Code. <b>Tarefas apoiadas:</b> sugestão do problema e das linguagens, implementação dos simuladores e da interface, geração dos casos de teste e da suíte automatizada, e rascunho deste relatório e do README. <b>Verificação feita pela equipe:</b> <span class="pendente">(descrever: por exemplo, refazer as provas, simular à mão os três cenários, conferir as tabelas de transição com o código, executar os testes e revisar o texto)</span>.</p>
+
+</body>
+</html>

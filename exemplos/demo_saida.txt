@@ -1,0 +1,231 @@
+
+╭──────────────────────────────────────────────────────────────╮
+│ CENÁRIO 1 · Aceita pelos dois módulos                        │
+│ Entrada: NNLLN*SOOSS#ppgp=ppgp  (21 símbolos)                │
+╰──────────────────────────────────────────────────────────────╯
+
+▶ Etapa 1 · AP — estrutura da missão (rota espelhada e contagem)
+┌───────┬────────┬─────┬──────────────────────────┬────────────────┬────────────────────────┐
+│ passo │ estado │ pos │ entrada (▸ símbolo lido) │ pilha (topo ←) │ transição              │
+├───────┼────────┼─────┼──────────────────────────┼────────────────┼────────────────────────┤
+│     0 │   q0   │   0 │ [N]NLLN*SOOSS#ppgp=ppgp  │ $              │ configuração inicial   │
+│     1 │   q1   │   0 │ [N]NLLN*SOOSS#ppgp=ppgp  │ $              │ δ(q0, ε, $) → (q1, $)  │
+│     2 │   q2   │   1 │ N[N]LLN*SOOSS#ppgp=ppgp  │ N$             │ δ(q1, N, $) → (q2, N$) │
+│     3 │   q2   │   2 │ NN[L]LN*SOOSS#ppgp=ppgp  │ NN$            │ δ(q2, N, N) → (q2, NN) │
+│     4 │   q2   │   3 │ NNL[L]N*SOOSS#ppgp=ppgp  │ LNN$           │ δ(q2, L, N) → (q2, LN) │
+│     5 │   q2   │   4 │ NNLL[N]*SOOSS#ppgp=ppgp  │ LLNN$          │ δ(q2, L, L) → (q2, LL) │
+│     6 │   q2   │   5 │ NNLLN[*]SOOSS#ppgp=ppgp  │ NLLNN$         │ δ(q2, N, L) → (q2, NL) │
+│     7 │   q3   │   6 │ NNLLN*[S]OOSS#ppgp=ppgp  │ NLLNN$         │ δ(q2, *, N) → (q3, N)  │
+│     8 │   q3   │   7 │ NNLLN*S[O]OSS#ppgp=ppgp  │ LLNN$          │ δ(q3, S, N) → (q3, ε)  │
+│     9 │   q3   │   8 │ NNLLN*SO[O]SS#ppgp=ppgp  │ LNN$           │ δ(q3, O, L) → (q3, ε)  │
+│    10 │   q3   │   9 │ NNLLN*SOO[S]S#ppgp=ppgp  │ NN$            │ δ(q3, O, L) → (q3, ε)  │
+│    11 │   q3   │  10 │ NNLLN*SOOS[S]#ppgp=ppgp  │ N$             │ δ(q3, S, N) → (q3, ε)  │
+│    12 │   q3   │  11 │ NNLLN*SOOSS[#]ppgp=ppgp  │ $              │ δ(q3, S, N) → (q3, ε)  │
+│    13 │   q4   │  12 │ NNLLN*SOOSS#[p]pgp=ppgp  │ $              │ δ(q3, #, $) → (q4, $)  │
+│    14 │   q5   │  13 │ NNLLN*SOOSS#p[p]gp=ppgp  │ K$             │ δ(q4, p, $) → (q5, K$) │
+│    15 │   q5   │  14 │ NNLLN*SOOSS#pp[g]p=ppgp  │ KK$            │ δ(q5, p, K) → (q5, KK) │
+│    16 │   q5   │  15 │ NNLLN*SOOSS#ppg[p]=ppgp  │ KKK$           │ δ(q5, g, K) → (q5, KK) │
+│    17 │   q5   │  16 │ NNLLN*SOOSS#ppgp[=]ppgp  │ KKKK$          │ δ(q5, p, K) → (q5, KK) │
+│    18 │   q6   │  17 │ NNLLN*SOOSS#ppgp=[p]pgp  │ KKKK$          │ δ(q5, =, K) → (q6, K)  │
+│    19 │   q6   │  18 │ NNLLN*SOOSS#ppgp=p[p]gp  │ KKK$           │ δ(q6, p, K) → (q6, ε)  │
+│    20 │   q6   │  19 │ NNLLN*SOOSS#ppgp=pp[g]p  │ KK$            │ δ(q6, p, K) → (q6, ε)  │
+│    21 │   q6   │  20 │ NNLLN*SOOSS#ppgp=ppg[p]  │ K$             │ δ(q6, g, K) → (q6, ε)  │
+│    22 │   q6   │  21 │ NNLLN*SOOSS#ppgp=ppgp[ε] │ $              │ δ(q6, p, K) → (q6, ε)  │
+│    23 │   q7   │  21 │ NNLLN*SOOSS#ppgp=ppgp[ε] │ $              │ δ(q6, ε, $) → (q7, $)  │
+└───────┴────────┴─────┴──────────────────────────┴────────────────┴────────────────────────┘
+
+  AP  ✔ ACEITA   entrada consumida e q7 é estado final
+
+▶ Etapa 2 · ALL — conferência dos comprovantes · trecho após '#': ppgp=ppgp (n = 9; fita = 11 células)
+┌───────┬────────┬─────┬───────────────────┬───────────────────────┐
+│ passo │ estado │ cab │ fita (▸ cabeçote) │ transição             │
+├───────┼────────┼─────┼───────────────────┼───────────────────────┤
+│     0 │   q0   │   0 │ [<]ppgp=ppgp>     │ configuração inicial  │
+│     1 │   q1   │   1 │ <[p]pgp=ppgp>     │ δ(q0, <) → (q1, <, D) │
+│     2 │   q2   │   2 │ <X[p]gp=ppgp>     │ δ(q1, p) → (q2, X, D) │
+│     3 │   q2   │   3 │ <Xp[g]p=ppgp>     │ δ(q2, p) → (q2, p, D) │
+│     4 │   q2   │   4 │ <Xpg[p]=ppgp>     │ δ(q2, g) → (q2, g, D) │
+│     5 │   q2   │   5 │ <Xpgp[=]ppgp>     │ δ(q2, p) → (q2, p, D) │
+│     6 │   q4   │   6 │ <Xpgp=[p]pgp>     │ δ(q2, =) → (q4, =, D) │
+│     7 │   q6   │   5 │ <Xpgp[=]Ypgp>     │ δ(q4, p) → (q6, Y, E) │
+│     8 │   q6   │   4 │ <Xpg[p]=Ypgp>     │ δ(q6, =) → (q6, =, E) │
+│     9 │   q6   │   3 │ <Xp[g]p=Ypgp>     │ δ(q6, p) → (q6, p, E) │
+│    10 │   q6   │   2 │ <X[p]gp=Ypgp>     │ δ(q6, g) → (q6, g, E) │
+│    11 │   q6   │   1 │ <[X]pgp=Ypgp>     │ δ(q6, p) → (q6, p, E) │
+├───────┼────────┼─────┼───────────────────┼───────────────────────┤
+│    12 │   q7   │   2 │ <X[p]gp=Ypgp>     │ δ(q6, X) → (q7, X, D) │
+│    13 │   q2   │   3 │ <XX[g]p=Ypgp>     │ δ(q7, p) → (q2, X, D) │
+│    14 │   q2   │   4 │ <XXg[p]=Ypgp>     │ δ(q2, g) → (q2, g, D) │
+│    15 │   q2   │   5 │ <XXgp[=]Ypgp>     │ δ(q2, p) → (q2, p, D) │
+│    16 │   q4   │   6 │ <XXgp=[Y]pgp>     │ δ(q2, =) → (q4, =, D) │
+│    17 │   q4   │   7 │ <XXgp=Y[p]gp>     │ δ(q4, Y) → (q4, Y, D) │
+│    18 │   q6   │   6 │ <XXgp=[Y]Ygp>     │ δ(q4, p) → (q6, Y, E) │
+│    19 │   q6   │   5 │ <XXgp[=]YYgp>     │ δ(q6, Y) → (q6, Y, E) │
+│    20 │   q6   │   4 │ <XXg[p]=YYgp>     │ δ(q6, =) → (q6, =, E) │
+│    21 │   q6   │   3 │ <XX[g]p=YYgp>     │ δ(q6, p) → (q6, p, E) │
+│    22 │   q6   │   2 │ <X[X]gp=YYgp>     │ δ(q6, g) → (q6, g, E) │
+├───────┼────────┼─────┼───────────────────┼───────────────────────┤
+│    23 │   q7   │   3 │ <XX[g]p=YYgp>     │ δ(q6, X) → (q7, X, D) │
+│    24 │   q3   │   4 │ <XXX[p]=YYgp>     │ δ(q7, g) → (q3, X, D) │
+│    25 │   q3   │   5 │ <XXXp[=]YYgp>     │ δ(q3, p) → (q3, p, D) │
+│    26 │   q5   │   6 │ <XXXp=[Y]Ygp>     │ δ(q3, =) → (q5, =, D) │
+│    27 │   q5   │   7 │ <XXXp=Y[Y]gp>     │ δ(q5, Y) → (q5, Y, D) │
+│    28 │   q5   │   8 │ <XXXp=YY[g]p>     │ δ(q5, Y) → (q5, Y, D) │
+│    29 │   q6   │   7 │ <XXXp=Y[Y]Yp>     │ δ(q5, g) → (q6, Y, E) │
+│    30 │   q6   │   6 │ <XXXp=[Y]YYp>     │ δ(q6, Y) → (q6, Y, E) │
+│    31 │   q6   │   5 │ <XXXp[=]YYYp>     │ δ(q6, Y) → (q6, Y, E) │
+│    32 │   q6   │   4 │ <XXX[p]=YYYp>     │ δ(q6, =) → (q6, =, E) │
+│    33 │   q6   │   3 │ <XX[X]p=YYYp>     │ δ(q6, p) → (q6, p, E) │
+├───────┼────────┼─────┼───────────────────┼───────────────────────┤
+│    34 │   q7   │   4 │ <XXX[p]=YYYp>     │ δ(q6, X) → (q7, X, D) │
+│    35 │   q2   │   5 │ <XXXX[=]YYYp>     │ δ(q7, p) → (q2, X, D) │
+│    36 │   q4   │   6 │ <XXXX=[Y]YYp>     │ δ(q2, =) → (q4, =, D) │
+│    37 │   q4   │   7 │ <XXXX=Y[Y]Yp>     │ δ(q4, Y) → (q4, Y, D) │
+│    38 │   q4   │   8 │ <XXXX=YY[Y]p>     │ δ(q4, Y) → (q4, Y, D) │
+│    39 │   q4   │   9 │ <XXXX=YYY[p]>     │ δ(q4, Y) → (q4, Y, D) │
+│    40 │   q6   │   8 │ <XXXX=YY[Y]Y>     │ δ(q4, p) → (q6, Y, E) │
+│    41 │   q6   │   7 │ <XXXX=Y[Y]YY>     │ δ(q6, Y) → (q6, Y, E) │
+│    42 │   q6   │   6 │ <XXXX=[Y]YYY>     │ δ(q6, Y) → (q6, Y, E) │
+│    43 │   q6   │   5 │ <XXXX[=]YYYY>     │ δ(q6, Y) → (q6, Y, E) │
+│    44 │   q6   │   4 │ <XXX[X]=YYYY>     │ δ(q6, =) → (q6, =, E) │
+├───────┼────────┼─────┼───────────────────┼───────────────────────┤
+│    45 │   q7   │   5 │ <XXXX[=]YYYY>     │ δ(q6, X) → (q7, X, D) │
+│    46 │   q8   │   6 │ <XXXX=[Y]YYY>     │ δ(q7, =) → (q8, =, D) │
+│    47 │   q8   │   7 │ <XXXX=Y[Y]YY>     │ δ(q8, Y) → (q8, Y, D) │
+│    48 │   q8   │   8 │ <XXXX=YY[Y]Y>     │ δ(q8, Y) → (q8, Y, D) │
+│    49 │   q8   │   9 │ <XXXX=YYY[Y]>     │ δ(q8, Y) → (q8, Y, D) │
+│    50 │   q8   │  10 │ <XXXX=YYYY[>]     │ δ(q8, Y) → (q8, Y, D) │
+│    51 │   qA   │  10 │ <XXXX=YYYY[>]     │ δ(q8, >) → (qA, >, P) │
+└───────┴────────┴─────┴───────────────────┴───────────────────────┘
+  X = volume conferido · Y = comprovante conferido · < > = marcadores de borda · linhas horizontais separam as rodadas
+
+  ALL  ✔ ACEITA   alcançou qA: comprovantes conferem com o embarque
+
+╭────────────────────────────────────╮
+│ RESULTADO FINAL: ACEITA (AP e ALL) │
+╰────────────────────────────────────╯
+
+
+╭──────────────────────────────────────────────────────────────╮
+│ CENÁRIO 2 · Rejeitada pelo AP (volta não desfaz a ida)       │
+│ Entrada: NNLLN*SOSOS#ppgp=ppgp  (21 símbolos)                │
+╰──────────────────────────────────────────────────────────────╯
+
+▶ Etapa 1 · AP — estrutura da missão (rota espelhada e contagem)
+┌───────┬────────┬─────┬──────────────────────────┬────────────────┬────────────────────────┐
+│ passo │ estado │ pos │ entrada (▸ símbolo lido) │ pilha (topo ←) │ transição              │
+├───────┼────────┼─────┼──────────────────────────┼────────────────┼────────────────────────┤
+│     0 │   q0   │   0 │ [N]NLLN*SOSOS#ppgp=ppgp  │ $              │ configuração inicial   │
+│     1 │   q1   │   0 │ [N]NLLN*SOSOS#ppgp=ppgp  │ $              │ δ(q0, ε, $) → (q1, $)  │
+│     2 │   q2   │   1 │ N[N]LLN*SOSOS#ppgp=ppgp  │ N$             │ δ(q1, N, $) → (q2, N$) │
+│     3 │   q2   │   2 │ NN[L]LN*SOSOS#ppgp=ppgp  │ NN$            │ δ(q2, N, N) → (q2, NN) │
+│     4 │   q2   │   3 │ NNL[L]N*SOSOS#ppgp=ppgp  │ LNN$           │ δ(q2, L, N) → (q2, LN) │
+│     5 │   q2   │   4 │ NNLL[N]*SOSOS#ppgp=ppgp  │ LLNN$          │ δ(q2, L, L) → (q2, LL) │
+│     6 │   q2   │   5 │ NNLLN[*]SOSOS#ppgp=ppgp  │ NLLNN$         │ δ(q2, N, L) → (q2, NL) │
+│     7 │   q3   │   6 │ NNLLN*[S]OSOS#ppgp=ppgp  │ NLLNN$         │ δ(q2, *, N) → (q3, N)  │
+│     8 │   q3   │   7 │ NNLLN*S[O]SOS#ppgp=ppgp  │ LLNN$          │ δ(q3, S, N) → (q3, ε)  │
+│     9 │   q3   │   8 │ NNLLN*SO[S]OS#ppgp=ppgp  │ LNN$           │ δ(q3, O, L) → (q3, ε)  │
+└───────┴────────┴─────┴──────────────────────────┴────────────────┴────────────────────────┘
+
+  AP  ✘ REJEITA   sem transição para (q3, 'S', topo L) na posição 8: a volta deve repetir a ida ao contrário com direções inversas, seguida de '#'
+
+▶ Etapa 2 · ALL — conferência dos comprovantes
+
+  ALL  — NÃO EXECUTADO   a entrada foi rejeitada pelo AP
+
+╭────────────────────────────────────────────────────────╮
+│ RESULTADO FINAL: REJEITADA pelo AP (ALL não executado) │
+╰────────────────────────────────────────────────────────╯
+
+
+╭──────────────────────────────────────────────────────────────────────────╮
+│ CENÁRIO 3 · Aceita pelo AP e rejeitada pelo ALL (ordem dos comprovantes) │
+│ Entrada: NNLLN*SOOSS#ppgp=pgpp  (21 símbolos)                            │
+╰──────────────────────────────────────────────────────────────────────────╯
+
+▶ Etapa 1 · AP — estrutura da missão (rota espelhada e contagem)
+┌───────┬────────┬─────┬──────────────────────────┬────────────────┬────────────────────────┐
+│ passo │ estado │ pos │ entrada (▸ símbolo lido) │ pilha (topo ←) │ transição              │
+├───────┼────────┼─────┼──────────────────────────┼────────────────┼────────────────────────┤
+│     0 │   q0   │   0 │ [N]NLLN*SOOSS#ppgp=pgpp  │ $              │ configuração inicial   │
+│     1 │   q1   │   0 │ [N]NLLN*SOOSS#ppgp=pgpp  │ $              │ δ(q0, ε, $) → (q1, $)  │
+│     2 │   q2   │   1 │ N[N]LLN*SOOSS#ppgp=pgpp  │ N$             │ δ(q1, N, $) → (q2, N$) │
+│     3 │   q2   │   2 │ NN[L]LN*SOOSS#ppgp=pgpp  │ NN$            │ δ(q2, N, N) → (q2, NN) │
+│     4 │   q2   │   3 │ NNL[L]N*SOOSS#ppgp=pgpp  │ LNN$           │ δ(q2, L, N) → (q2, LN) │
+│     5 │   q2   │   4 │ NNLL[N]*SOOSS#ppgp=pgpp  │ LLNN$          │ δ(q2, L, L) → (q2, LL) │
+│     6 │   q2   │   5 │ NNLLN[*]SOOSS#ppgp=pgpp  │ NLLNN$         │ δ(q2, N, L) → (q2, NL) │
+│     7 │   q3   │   6 │ NNLLN*[S]OOSS#ppgp=pgpp  │ NLLNN$         │ δ(q2, *, N) → (q3, N)  │
+│     8 │   q3   │   7 │ NNLLN*S[O]OSS#ppgp=pgpp  │ LLNN$          │ δ(q3, S, N) → (q3, ε)  │
+│     9 │   q3   │   8 │ NNLLN*SO[O]SS#ppgp=pgpp  │ LNN$           │ δ(q3, O, L) → (q3, ε)  │
+│    10 │   q3   │   9 │ NNLLN*SOO[S]S#ppgp=pgpp  │ NN$            │ δ(q3, O, L) → (q3, ε)  │
+│    11 │   q3   │  10 │ NNLLN*SOOS[S]#ppgp=pgpp  │ N$             │ δ(q3, S, N) → (q3, ε)  │
+│    12 │   q3   │  11 │ NNLLN*SOOSS[#]ppgp=pgpp  │ $              │ δ(q3, S, N) → (q3, ε)  │
+│    13 │   q4   │  12 │ NNLLN*SOOSS#[p]pgp=pgpp  │ $              │ δ(q3, #, $) → (q4, $)  │
+│    14 │   q5   │  13 │ NNLLN*SOOSS#p[p]gp=pgpp  │ K$             │ δ(q4, p, $) → (q5, K$) │
+│    15 │   q5   │  14 │ NNLLN*SOOSS#pp[g]p=pgpp  │ KK$            │ δ(q5, p, K) → (q5, KK) │
+│    16 │   q5   │  15 │ NNLLN*SOOSS#ppg[p]=pgpp  │ KKK$           │ δ(q5, g, K) → (q5, KK) │
+│    17 │   q5   │  16 │ NNLLN*SOOSS#ppgp[=]pgpp  │ KKKK$          │ δ(q5, p, K) → (q5, KK) │
+│    18 │   q6   │  17 │ NNLLN*SOOSS#ppgp=[p]gpp  │ KKKK$          │ δ(q5, =, K) → (q6, K)  │
+│    19 │   q6   │  18 │ NNLLN*SOOSS#ppgp=p[g]pp  │ KKK$           │ δ(q6, p, K) → (q6, ε)  │
+│    20 │   q6   │  19 │ NNLLN*SOOSS#ppgp=pg[p]p  │ KK$            │ δ(q6, g, K) → (q6, ε)  │
+│    21 │   q6   │  20 │ NNLLN*SOOSS#ppgp=pgp[p]  │ K$             │ δ(q6, p, K) → (q6, ε)  │
+│    22 │   q6   │  21 │ NNLLN*SOOSS#ppgp=pgpp[ε] │ $              │ δ(q6, p, K) → (q6, ε)  │
+│    23 │   q7   │  21 │ NNLLN*SOOSS#ppgp=pgpp[ε] │ $              │ δ(q6, ε, $) → (q7, $)  │
+└───────┴────────┴─────┴──────────────────────────┴────────────────┴────────────────────────┘
+
+  AP  ✔ ACEITA   entrada consumida e q7 é estado final
+
+▶ Etapa 2 · ALL — conferência dos comprovantes · trecho após '#': ppgp=pgpp (n = 9; fita = 11 células)
+┌───────┬────────┬─────┬───────────────────┬───────────────────────┐
+│ passo │ estado │ cab │ fita (▸ cabeçote) │ transição             │
+├───────┼────────┼─────┼───────────────────┼───────────────────────┤
+│     0 │   q0   │   0 │ [<]ppgp=pgpp>     │ configuração inicial  │
+│     1 │   q1   │   1 │ <[p]pgp=pgpp>     │ δ(q0, <) → (q1, <, D) │
+│     2 │   q2   │   2 │ <X[p]gp=pgpp>     │ δ(q1, p) → (q2, X, D) │
+│     3 │   q2   │   3 │ <Xp[g]p=pgpp>     │ δ(q2, p) → (q2, p, D) │
+│     4 │   q2   │   4 │ <Xpg[p]=pgpp>     │ δ(q2, g) → (q2, g, D) │
+│     5 │   q2   │   5 │ <Xpgp[=]pgpp>     │ δ(q2, p) → (q2, p, D) │
+│     6 │   q4   │   6 │ <Xpgp=[p]gpp>     │ δ(q2, =) → (q4, =, D) │
+│     7 │   q6   │   5 │ <Xpgp[=]Ygpp>     │ δ(q4, p) → (q6, Y, E) │
+│     8 │   q6   │   4 │ <Xpg[p]=Ygpp>     │ δ(q6, =) → (q6, =, E) │
+│     9 │   q6   │   3 │ <Xp[g]p=Ygpp>     │ δ(q6, p) → (q6, p, E) │
+│    10 │   q6   │   2 │ <X[p]gp=Ygpp>     │ δ(q6, g) → (q6, g, E) │
+│    11 │   q6   │   1 │ <[X]pgp=Ygpp>     │ δ(q6, p) → (q6, p, E) │
+├───────┼────────┼─────┼───────────────────┼───────────────────────┤
+│    12 │   q7   │   2 │ <X[p]gp=Ygpp>     │ δ(q6, X) → (q7, X, D) │
+│    13 │   q2   │   3 │ <XX[g]p=Ygpp>     │ δ(q7, p) → (q2, X, D) │
+│    14 │   q2   │   4 │ <XXg[p]=Ygpp>     │ δ(q2, g) → (q2, g, D) │
+│    15 │   q2   │   5 │ <XXgp[=]Ygpp>     │ δ(q2, p) → (q2, p, D) │
+│    16 │   q4   │   6 │ <XXgp=[Y]gpp>     │ δ(q2, =) → (q4, =, D) │
+│    17 │   q4   │   7 │ <XXgp=Y[g]pp>     │ δ(q4, Y) → (q4, Y, D) │
+│    18 │   qR   │   7 │ <XXgp=Y[g]pp>     │ sem transição → qR    │
+└───────┴────────┴─────┴───────────────────┴───────────────────────┘
+  X = volume conferido · Y = comprovante conferido · < > = marcadores de borda · linhas horizontais separam as rodadas
+
+  ALL  ✘ REJEITA   sem transição para (q4, 'g') na célula 7 → qR: comprovante 'g' onde o embarque exigia 'p' (ordem/tipo diferente)
+
+╭─────────────────────────────────────────────────────╮
+│ RESULTADO FINAL: aceita pelo AP, REJEITADA pelo ALL │
+╰─────────────────────────────────────────────────────╯
+
+
+▶ Derivação mais à esquerda de NNLLN*SOOSS#ppgp=ppgp
+   0   M                       
+   1 ⇒ R#C                     M → R # C
+   2 ⇒ NRS#C                   R → N R S
+   3 ⇒ NNRSS#C                 R → N R S
+   4 ⇒ NNLROSS#C               R → L R O
+   5 ⇒ NNLLROOSS#C             R → L R O
+   6 ⇒ NNLLN*SOOSS#C           R → N * S
+   7 ⇒ NNLLN*SOOSS#TCT         C → T C T
+   8 ⇒ NNLLN*SOOSS#pCT         T → p
+   9 ⇒ NNLLN*SOOSS#pTCTT       C → T C T
+  10 ⇒ NNLLN*SOOSS#ppCTT       T → p
+  11 ⇒ NNLLN*SOOSS#ppTCTTT     C → T C T
+  12 ⇒ NNLLN*SOOSS#ppgCTTT     T → g
+  13 ⇒ NNLLN*SOOSS#ppgT=TTTT   C → T = T
+  14 ⇒ NNLLN*SOOSS#ppgp=TTTT   T → p
+  15 ⇒ NNLLN*SOOSS#ppgp=pTTT   T → p
+  16 ⇒ NNLLN*SOOSS#ppgp=ppTT   T → p
+  17 ⇒ NNLLN*SOOSS#ppgp=ppgT   T → g
+  18 ⇒ NNLLN*SOOSS#ppgp=ppgp   T → p
