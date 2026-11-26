@@ -37,8 +37,8 @@ NNLLN*SOOSS#ppgp=ppgp
 ## Instalação
 
 ```bash
-git clone <url-do-repositorio>
-cd LLC
+git clone https://github.com/murilpcarneiro/validador-missoes-drone.git
+cd validador-missoes-drone
 ```
 
 No Windows use `py`; no Linux/macOS use `python3` nos comandos abaixo.
